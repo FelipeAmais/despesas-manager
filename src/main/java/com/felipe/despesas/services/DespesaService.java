@@ -2,6 +2,7 @@ package com.felipe.despesas.services;
 
 import java.util.List;
 
+import org.hibernate.persister.collection.mutation.DeleteRowsCoordinatorTablePerSubclass;
 import org.springframework.stereotype.Service;
 
 import com.felipe.despesas.model.Despesa;
@@ -19,6 +20,12 @@ public class DespesaService {
     public List<Despesa> listarDespesas() {
         return despesaRepository.findAll();
     }
+
+    public Despesa buscarPorId(Long id) {
+        return despesaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Despesa não encontrada"));
+    }
+
 
     public Despesa criarDespesa(Despesa despesa) {
         return despesaRepository.save(despesa);
