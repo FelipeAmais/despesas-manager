@@ -1,5 +1,7 @@
 package com.felipe.despesas.services;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.persister.collection.mutation.DeleteRowsCoordinatorTablePerSubclass;
@@ -26,9 +28,24 @@ public class DespesaService {
                 .orElseThrow(() -> new RuntimeException("Despesa não encontrada"));
     }
 
-
     public Despesa criarDespesa(Despesa despesa) {
+        validarDespesa(despesa);
         return despesaRepository.save(despesa);
+    }
+
+    /* Validacoes para a criacao da despesa */
+    public void validarDespesa(Despesa despesa) {
+        if (despesa.getValor() == null || despesa.getValor() <= 0) {
+            throw new IllegalArgumentException("O valor deve ser maior que zero.");
+        }
+
+        if (despesa.getData() == null || despesa.getData().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("A data não pode ser futura.");
+        }
+
+        if (despesa.getDescricao() == null || despesa.getDescricao().isBlank()) {
+            throw new IllegalArgumentException("A descrição não pode ser vazia.");
+        }
     }
 
     public Despesa atualizarDespesa(Despesa despesa) {

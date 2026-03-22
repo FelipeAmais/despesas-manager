@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -22,7 +23,7 @@ public class Despesa {
     
     private String descricao;
     private Double valor;
-    private Date data;
+    private LocalDate data;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
@@ -52,11 +53,11 @@ public class Despesa {
         this.valor = valor;
     }
 
-    public Date getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 
