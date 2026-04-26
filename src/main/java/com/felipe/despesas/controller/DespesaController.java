@@ -3,16 +3,8 @@ package com.felipe.despesas.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 
@@ -31,6 +23,11 @@ public class DespesaController {
         this.despesaService = despesaService;
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping
     public List<Despesa> listarDespesas() {
         return despesaService.listarDespesas();
@@ -40,7 +37,6 @@ public class DespesaController {
     public Despesa buscarPorId(@PathVariable Long id) {
         return despesaService.buscarPorId(id);
     }
-
 
     @PostMapping
     public Despesa criarDespesa(@RequestBody Despesa despesa) {
