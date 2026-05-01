@@ -27,6 +27,11 @@ public class DespesaController {
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleNullPointerException(NullPointerException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
 
     @GetMapping
     public List<Despesa> listarDespesas() {
@@ -34,8 +39,10 @@ public class DespesaController {
     }
 
     @GetMapping("/{id}")
-    public Despesa buscarPorId(@PathVariable Long id) {
-        return despesaService.buscarPorId(id);
+    public ResponseEntity<Despesa> buscarPorId(@PathVariable Long id) {
+        return despesaService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping

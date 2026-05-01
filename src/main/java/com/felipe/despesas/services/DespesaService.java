@@ -3,6 +3,7 @@ package com.felipe.despesas.services;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.persister.collection.mutation.DeleteRowsCoordinatorTablePerSubclass;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,8 @@ public class DespesaService {
         return despesaRepository.findAll();
     }
 
-    public Despesa buscarPorId(Long id) {
-        return despesaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Despesa não encontrada"));
+    public Optional<Despesa> buscarPorId(Long id) {
+        return despesaRepository.findById(id);
     }
 
     public Despesa criarDespesa(Despesa despesa) {
