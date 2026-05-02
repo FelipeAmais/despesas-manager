@@ -44,3 +44,31 @@ https://github.com/FelipeAmais
 
 📄 Documentação Swagger/OpenAPI
 
+## Como Usar
+
+URL: https://dispesas-manager-production.up.railway.app
+
+GET Despesas: https://dispesas-manager-production.up.railway.app/despesas
+POST Despesas: https://dispesas-manager-production.up.railway.app/despesas
+body {
+descricao,
+valor,
+data(YYYY/MM/DD),,
+categoria_id
+}
+PUT Despesas: https://dispesas-manager-production.up.railway.app/despesas
+body {
+id,
+descricao,
+valor,
+data(YYYY/MM/DD),
+categoria_id
+}
+DELETE Despesas: https://dispesas-manager-production.up.railway.app/despesas/{id}
+
+GET Categorias https://dispesas-manager-production.up.railway.app/categorias
+POST Categorias: https://dispesas-manager-production.up.railway.app/categorias
+body {
+nome
+}
+DELETE Categorias: https://dispesas-manager-production.up.railway.app/categorias/{id}
