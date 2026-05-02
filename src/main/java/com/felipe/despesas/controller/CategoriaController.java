@@ -21,11 +21,6 @@ public class CategoriaController {
         this.categoriaService = categoriaService;
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
     @GetMapping
     public List<Categoria> listarCategorias() {
         return categoriaService.listarCategorias();

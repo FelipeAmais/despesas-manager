@@ -23,11 +23,6 @@ public class DespesaController {
         this.despesaService = despesaService;
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
     @GetMapping
     public List<Despesa> listarDespesas() {
         return despesaService.listarDespesas();
