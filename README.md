@@ -1,63 +1,131 @@
 # 💸 API de Gerenciamento de Despesas
 
-API REST desenvolvida em **Spring Boot** para controle de despesas pessoais, com categorização, persistência em banco de dados MySQL e estrutura baseada em boas práticas de desenvolvimento.
+API REST desenvolvida em **Spring Boot** para controle de despesas pessoais, com autenticação JWT, categorização de despesas e persistência em banco de dados MySQL.
 
 ---
 
 ## ✅ Funcionalidades
 
-- Cadastro de categorias de despesas
-- Cadastro de despesas vinculadas a uma categoria
-- Edição, listagem e exclusão de categorias e despesas
-- Relacionamento entre entidades
-- Tratamento centralizado de erros
-- Separação entre Controller, Service e Repository
-- Testado com Postman
+* Cadastro de usuários
+* Autenticação com JWT (JSON Web Token)
+* Senhas criptografadas com BCrypt
+* Cadastro de categorias de despesas
+* Cadastro de despesas vinculadas a categorias
+* CRUD completo de categorias
+* CRUD completo de despesas
+* Relacionamento entre entidades
+* Tratamento centralizado de exceções
+* Proteção de rotas com Spring Security
+* Persistência em banco de dados MySQL
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Tecnologia | Versão |
-|---|---|
-| Java | 21 |
-| Spring Boot | 3.5.3 |
-| Spring Web | - |
-| Spring Data JPA | - |
-| MySQL | 8 |
-| Hibernate ORM | - |
-| Postman | (testes) |
-
----
-
-## 👤 Autor
-
-Desenvolvido por **Felipe de Oliveira Romeiro Amais**  
-Acadêmico de Sistemas de Informação — UNIPAR  
-[github.com/FelipeAmais](https://github.com/FelipeAmais)
-
----
-
-## 🔮 Futuras Melhorias
-
-- [ ] Autenticação com Spring Security + JWT
-- [ ] Filtros por data e categoria
-- [ ] Integração com frontend (React)
-- [ ] Documentação Swagger/OpenAPI
+| Tecnologia              | Versão |
+| ----------------------- | ------ |
+| Java                    | 21     |
+| Spring Boot             | 3.5.3  |
+| Spring Web              | -      |
+| Spring Security         | -      |
+| JWT (JJWT)              | -      |
+| Spring Data JPA         | -      |
+| Hibernate ORM           | -      |
+| MySQL                   | 8      |
+| BCrypt Password Encoder | -      |
+| Postman                 | Testes |
 
 ---
 
 ## 🚀 Como Usar
 
-**URL Base:** `https://dispesas-manager-production.up.railway.app`
+**URL Base**
+
+```text
+https://dispesas-manager-production.up.railway.app
+```
 
 ---
 
-## 📋 Endpoints
+## 🔐 Autenticação
 
-### 💰 Despesas
+A API utiliza autenticação baseada em JWT (JSON Web Token).
 
-#### `POST /despesas` — Criar despesa
+### Registrar Usuário
+
+**POST** `/auth/register`
+
+#### Request
+
+```json
+{
+  "email": "usuario@email.com",
+  "senha": "123456"
+}
+```
+
+#### Response
+
+```json
+{
+  "id": 1,
+  "email": "usuario@email.com"
+}
+```
+
+---
+
+### Login
+
+**POST** `/auth/login`
+
+#### Request
+
+```json
+{
+  "email": "usuario@email.com",
+  "senha": "123456"
+}
+```
+
+#### Response
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+---
+
+## 🔒 Endpoints Protegidos
+
+Após realizar login, envie o token JWT no cabeçalho das requisições:
+
+```http
+Authorization: Bearer SEU_TOKEN
+```
+
+### Endpoints Públicos
+
+| Método | Endpoint       |
+| ------ | -------------- |
+| POST   | /auth/register |
+| POST   | /auth/login    |
+
+### Endpoints Protegidos
+
+Todos os endpoints abaixo exigem autenticação.
+
+---
+
+## 💰 Despesas
+
+### Criar Despesa
+
+**POST** `/despesas`
+
+#### Request
 
 ```json
 {
@@ -70,11 +138,25 @@ Acadêmico de Sistemas de Informação — UNIPAR
 }
 ```
 
-#### `GET /despesas` — Listar despesas
+---
 
-#### `GET /despesas/{id}` — Buscar despesa por ID
+### Listar Despesas
 
-#### `PUT /despesas` — Atualizar despesa
+**GET** `/despesas`
+
+---
+
+### Buscar Despesa por ID
+
+**GET** `/despesas/{id}`
+
+---
+
+### Atualizar Despesa
+
+**PUT** `/despesas`
+
+#### Request
 
 ```json
 {
@@ -88,13 +170,21 @@ Acadêmico de Sistemas de Informação — UNIPAR
 }
 ```
 
-#### `DELETE /despesas/{id}` — Deletar despesa
+---
+
+### Deletar Despesa
+
+**DELETE** `/despesas/{id}`
 
 ---
 
-### 🏷️ Categorias
+## 🏷️ Categorias
 
-#### `POST /categorias` — Criar categoria
+### Criar Categoria
+
+**POST** `/categorias`
+
+#### Request
 
 ```json
 {
@@ -102,11 +192,25 @@ Acadêmico de Sistemas de Informação — UNIPAR
 }
 ```
 
-#### `GET /categorias` — Listar categorias
+---
 
-#### `GET /categorias/{id}` — Buscar categoria por ID
+### Listar Categorias
 
-#### `PUT /categorias` — Atualizar categoria
+**GET** `/categorias`
+
+---
+
+### Buscar Categoria por ID
+
+**GET** `/categorias/{id}`
+
+---
+
+### Atualizar Categoria
+
+**PUT** `/categorias`
+
+#### Request
 
 ```json
 {
@@ -115,4 +219,68 @@ Acadêmico de Sistemas de Informação — UNIPAR
 }
 ```
 
-#### `DELETE /categorias/{id}` — Deletar categoria
+---
+
+### Deletar Categoria
+
+**DELETE** `/categorias/{id}`
+
+---
+
+## 📁 Estrutura do Projeto
+
+```text
+src/main/java/com/felipe/despesas
+├── config
+│   ├── JwtAuthFilter
+│   ├── PasswordConfig
+│   └── SecurityConfig
+├── controller
+│   ├── AuthController
+│   ├── CategoriaController
+│   └── DespesaController
+├── dto
+│   ├── LoginRequest
+│   └── LoginResponse
+├── exception
+│   └── GlobalExceptionHandler
+├── model
+│   ├── Categoria
+│   ├── Despesa
+│   └── Usuario
+├── repository
+│   ├── CategoriaRepository
+│   ├── DespesaRepository
+│   └── UsuarioRepository
+├── services
+│   ├── CategoriaService
+│   ├── DespesaService
+│   ├── JwtService
+│   └── UsuarioService
+└── DespesasApplication
+```
+
+---
+
+## 👤 Autor
+
+**Felipe de Oliveira Romeiro Amais**
+Acadêmico de Sistemas de Informação — UNIPAR
+
+GitHub: https://github.com/FelipeAmais
+
+---
+
+## 🔮 Futuras Melhorias
+
+* [ ] Validação de usuários
+* [ ] Swagger/OpenAPI
+* [ ] Testes unitários
+* [ ] Docker
+* [ ] Refresh Token
+* [ ] Filtros por período
+* [ ] Filtros por categoria
+* [ ] Recuperação de senha
+
+```
+```
