@@ -1,13 +1,11 @@
 package com.felipe.despesas.services;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import org.hibernate.persister.collection.mutation.DeleteRowsCoordinatorTablePerSubclass;
+import com.felipe.despesas.model.Usuario;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import com.felipe.despesas.model.Despesa;
 import com.felipe.despesas.repository.DespesaRepository;
 
@@ -20,8 +18,12 @@ public class DespesaService {
         this.despesaRepository = despesaRepository;
     }
 
+    private Usuario getUsuarioAutenticado() {
+        return (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
     public List<Despesa> listarDespesas() {
-        return despesaRepository.findAll();
+        return despesaRepository.findByUsuario(getUsuarioAutenticado());
     }
 
     public Optional<Despesa> buscarPorId(Long id) {
@@ -29,6 +31,7 @@ public class DespesaService {
     }
 
     public Despesa criarDespesa(Despesa despesa) {
+        despesa.setUsuario(getUsuarioAutenticado());
         validarDespesa(despesa);
         return despesaRepository.save(despesa);
     }
