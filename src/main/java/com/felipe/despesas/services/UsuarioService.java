@@ -2,6 +2,7 @@ package com.felipe.despesas.services;
 
 import com.felipe.despesas.dto.LoginRequest;
 import com.felipe.despesas.dto.LoginResponse;
+import com.felipe.despesas.exception.InvalidCredentialsException;
 import com.felipe.despesas.model.Usuario;
 import com.felipe.despesas.repository.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,10 +38,10 @@ public class UsuarioService implements UserDetailsService {
 
     public LoginResponse login(LoginRequest loginRequest) {
         Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Email ou senha Inválidos"));
+                .orElseThrow(() -> new InvalidCredentialsException("Email ou senha Inválidos"));
 
         if (!passwordEncoder.matches(loginRequest.getSenha(), usuario.getSenha())) {
-            throw new IllegalArgumentException("Email ou senha Inválidos");
+            throw new InvalidCredentialsException("Email ou senha Inválidos");
         }
 
         String token = jwtService.gerarToken(loginRequest.getEmail());
