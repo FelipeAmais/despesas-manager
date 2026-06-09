@@ -3,6 +3,7 @@ package com.felipe.despesas.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -16,7 +17,7 @@ public class Despesa {
     private Long id;
     
     private String descricao;
-    private Double valor;
+    private BigDecimal valor;
     private LocalDate data;
 
     @ManyToOne(fetch = FetchType.EAGER)

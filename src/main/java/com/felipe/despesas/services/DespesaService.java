@@ -1,5 +1,6 @@
 package com.felipe.despesas.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class DespesaService {
 
     /* Validacoes para a criacao da despesa */
     public void validarDespesa(Despesa despesa) {
-        if (despesa.getValor() == null || despesa.getValor() <= 0) {
+        if (despesa.getValor() == null || despesa.getValor().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O valor deve ser maior que zero.");
         }
 
