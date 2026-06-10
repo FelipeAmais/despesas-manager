@@ -3,6 +3,8 @@ package com.felipe.despesas.controller;
 
 import java.util.List;
 
+import com.felipe.despesas.dto.DespesaRequest;
+import com.felipe.despesas.dto.DespesaResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,25 +26,26 @@ public class DespesaController {
     }
 
     @GetMapping
-    public List<Despesa> listarDespesas() {
+    public List<DespesaResponse> listarDespesas() {
         return despesaService.listarDespesas();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Despesa> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<DespesaResponse> buscarPorId(@PathVariable Long id) {
         return despesaService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Despesa criarDespesa(@RequestBody Despesa despesa) {
-        return despesaService.criarDespesa(despesa);
+    @ResponseStatus(HttpStatus.CREATED)
+    public DespesaResponse criarDespesa(@RequestBody DespesaRequest despesaRequest) {
+        return despesaService.criarDespesa(despesaRequest);
     }
 
-    @PutMapping
-    public Despesa atualizarDespesa(@RequestBody Despesa despesa) {
-        return despesaService.atualizarDespesa(despesa);
+    @PutMapping("/{id}")
+    public DespesaResponse atualizarDespesa(@PathVariable Long id, @RequestBody DespesaRequest despesaRequest) {
+        return despesaService.atualizarDespesa(id, despesaRequest);
     }
 
     @DeleteMapping("/{id}")
