@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.felipe.despesas.dto.DespesaRequest;
 import com.felipe.despesas.dto.DespesaResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 
-import com.felipe.despesas.model.Despesa;
 import com.felipe.despesas.services.DespesaService;
 
 
@@ -39,12 +39,12 @@ public class DespesaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DespesaResponse criarDespesa(@RequestBody DespesaRequest despesaRequest) {
+    public DespesaResponse criarDespesa(@Valid @RequestBody DespesaRequest despesaRequest) {
         return despesaService.criarDespesa(despesaRequest);
     }
 
     @PutMapping("/{id}")
-    public DespesaResponse atualizarDespesa(@PathVariable Long id, @RequestBody DespesaRequest despesaRequest) {
+    public DespesaResponse atualizarDespesa(@PathVariable Long id, @Valid @RequestBody DespesaRequest despesaRequest) {
         return despesaService.atualizarDespesa(id, despesaRequest);
     }
 

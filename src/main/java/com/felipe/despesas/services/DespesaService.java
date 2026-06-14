@@ -55,24 +55,8 @@ public class DespesaService {
     public DespesaResponse criarDespesa(DespesaRequest despesaRequest) {
         Despesa despesa = toDespesa(null, despesaRequest);
         despesa.setUsuario(getUsuarioAutenticado());
-        validarDespesa(despesa);
         Despesa salva = despesaRepository.save(despesa);
         return toResponse(salva);
-    }
-
-    /* Validacoes para a criacao da despesa */
-    public void validarDespesa(Despesa despesa) {
-        if (despesa.getValor() == null || despesa.getValor().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("O valor deve ser maior que zero.");
-        }
-
-        if (despesa.getData() == null || despesa.getData().isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data não pode ser futura.");
-        }
-
-        if (despesa.getDescricao() == null || despesa.getDescricao().isBlank()) {
-            throw new IllegalArgumentException("A descrição não pode ser vazia.");
-        }
     }
 
     public DespesaResponse atualizarDespesa(Long id, DespesaRequest despesaRequest) {
