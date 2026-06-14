@@ -31,10 +31,8 @@ public class DespesaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DespesaResponse> buscarPorId(@PathVariable Long id) {
-        return despesaService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public DespesaResponse buscarPorId(@PathVariable Long id) {
+        return despesaService.buscarPorId(id);
     }
 
     @PostMapping

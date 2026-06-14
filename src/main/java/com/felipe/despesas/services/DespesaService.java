@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.felipe.despesas.dto.DespesaRequest;
 import com.felipe.despesas.dto.DespesaResponse;
+import com.felipe.despesas.exception.NotFoundException;
 import com.felipe.despesas.model.Categoria;
 import com.felipe.despesas.model.Usuario;
 import com.felipe.despesas.repository.CategoriaRepository;
@@ -41,6 +42,11 @@ public class DespesaService {
         return new Despesa(id, despesaRequest.getDescricao(), despesaRequest.getValor(), despesaRequest.getData(), categoria);
     }
 
+    private  Despesa buscarDespesaValidada(Long id){
+        return despesaRepository.findById(id).filter(despesa -> despesa.getUsuario().getId().equals(getUsuarioAutenticado().getId()))
+                .orElseThrow(() -> new NotFoundException("Despesa inexistente"));
+    }
+
     public List<DespesaResponse> listarDespesas() {
         List<Despesa> despesas = despesaRepository.findByUsuario(getUsuarioAutenticado());
         return despesas.stream()
@@ -48,8 +54,8 @@ public class DespesaService {
                 .toList();
     }
 
-    public Optional<DespesaResponse> buscarPorId(Long id) {
-        return despesaRepository.findById(id).map(this::toResponse);
+    public DespesaResponse buscarPorId(Long id) {
+        return toResponse(buscarDespesaValidada(id));
     }
 
     public DespesaResponse criarDespesa(DespesaRequest despesaRequest) {
@@ -60,9 +66,7 @@ public class DespesaService {
     }
 
     public DespesaResponse atualizarDespesa(Long id, DespesaRequest despesaRequest) {
-        Despesa despesa = despesaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Despesa não encontrada"));
-
+        Despesa despesa = buscarDespesaValidada(id);
         despesa.setDescricao(despesaRequest.getDescricao());
         despesa.setValor(despesaRequest.getValor());
         despesa.setData(despesaRequest.getData());
@@ -75,9 +79,7 @@ public class DespesaService {
     }
 
     public void excluirDespesa(Long id) {
-        if (!despesaRepository.existsById(id)) {
-            throw new IllegalArgumentException("Despesa não encontrada");
-        }
-        despesaRepository.deleteById(id);
+        Despesa despesa = buscarDespesaValidada(id);
+        despesaRepository.deleteById(despesa.getId());
     }
 }
