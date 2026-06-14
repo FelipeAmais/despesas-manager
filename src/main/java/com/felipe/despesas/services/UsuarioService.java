@@ -28,12 +28,7 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = new Usuario();
         usuario.setEmail(loginRequest.getEmail());
         usuario.setSenha(passwordEncoder.encode(loginRequest.getSenha()));
-        validarUsuario();
         return usuarioRepository.save(usuario);
-    }
-
-    private void validarUsuario() {
-
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
