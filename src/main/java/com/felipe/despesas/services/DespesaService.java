@@ -54,6 +54,13 @@ public class DespesaService {
         return despesas.map(this::toResponse);
     }
 
+    public List<DespesaResponse> listaPorPeriodo(LocalDate inicio, LocalDate fim) {
+        List<Despesa> despesas = despesaRepository.findByUsuarioAndDataBetween(getUsuarioAutenticado(), inicio, fim);
+        return despesas.stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     public DespesaResponse buscarPorId(Long id) {
         return toResponse(buscarDespesaValidada(id));
     }
