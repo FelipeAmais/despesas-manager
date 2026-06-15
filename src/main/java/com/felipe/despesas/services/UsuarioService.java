@@ -14,9 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 public class UsuarioService implements UserDetailsService {
 
-    private UsuarioRepository usuarioRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtService jwtService;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;

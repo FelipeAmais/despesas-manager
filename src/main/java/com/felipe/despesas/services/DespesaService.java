@@ -1,17 +1,13 @@
 package com.felipe.despesas.services;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-
 import com.felipe.despesas.dto.DespesaRequest;
 import com.felipe.despesas.dto.DespesaResponse;
 import com.felipe.despesas.exception.NotFoundException;
 import com.felipe.despesas.model.Categoria;
 import com.felipe.despesas.model.Usuario;
 import com.felipe.despesas.repository.CategoriaRepository;
-import com.felipe.despesas.repository.UsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
