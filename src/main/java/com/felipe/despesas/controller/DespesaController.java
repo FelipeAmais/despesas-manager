@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import com.felipe.despesas.services.DespesaService;
 
+import java.time.LocalDate;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/despesas")
@@ -23,6 +26,11 @@ public class DespesaController {
     @GetMapping
     public Page<DespesaResponse> listarDespesas(Pageable pageable) {
         return despesaService.listarDespesas(pageable);
+    }
+
+    @GetMapping("/relatorio")
+    public List<DespesaResponse> buscarPorPeriodo(@RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
+        return despesaService.listaPorPeriodo(inicio, fim);
     }
 
     @GetMapping("/{id}")
