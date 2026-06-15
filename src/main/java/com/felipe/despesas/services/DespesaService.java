@@ -12,6 +12,8 @@ import com.felipe.despesas.model.Categoria;
 import com.felipe.despesas.model.Usuario;
 import com.felipe.despesas.repository.CategoriaRepository;
 import com.felipe.despesas.repository.UsuarioRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.felipe.despesas.model.Despesa;
@@ -47,11 +49,9 @@ public class DespesaService {
                 .orElseThrow(() -> new NotFoundException("Despesa inexistente"));
     }
 
-    public List<DespesaResponse> listarDespesas() {
-        List<Despesa> despesas = despesaRepository.findByUsuario(getUsuarioAutenticado());
-        return despesas.stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<DespesaResponse> listarDespesas(Pageable pageable) {
+        Page<Despesa> despesas = despesaRepository.findByUsuario(getUsuarioAutenticado(), pageable);
+        return despesas.map(this::toResponse);
     }
 
     public DespesaResponse buscarPorId(Long id) {

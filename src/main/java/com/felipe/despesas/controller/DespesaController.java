@@ -1,11 +1,10 @@
 package com.felipe.despesas.controller;
 
-
-import java.util.List;
 import com.felipe.despesas.dto.DespesaRequest;
 import com.felipe.despesas.dto.DespesaResponse;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import com.felipe.despesas.services.DespesaService;
@@ -22,8 +21,8 @@ public class DespesaController {
     }
 
     @GetMapping
-    public List<DespesaResponse> listarDespesas() {
-        return despesaService.listarDespesas();
+    public Page<DespesaResponse> listarDespesas(Pageable pageable) {
+        return despesaService.listarDespesas(pageable);
     }
 
     @GetMapping("/{id}")
