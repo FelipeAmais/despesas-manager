@@ -2,19 +2,15 @@ package com.felipe.despesas.controller;
 
 
 import java.util.List;
-
 import com.felipe.despesas.dto.DespesaRequest;
 import com.felipe.despesas.dto.DespesaResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.http.HttpStatus;
-
 import com.felipe.despesas.services.DespesaService;
 
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/despesas")
 public class DespesaController {

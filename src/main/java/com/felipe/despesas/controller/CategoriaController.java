@@ -1,15 +1,11 @@
 package com.felipe.despesas.controller;
 
 import java.util.List;
-
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.http.HttpStatus;
-
 import com.felipe.despesas.model.Categoria;
 import com.felipe.despesas.services.CategoriaService;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/categorias")
 public class CategoriaController {
