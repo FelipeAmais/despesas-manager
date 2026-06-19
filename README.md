@@ -1,22 +1,24 @@
 # 💸 API de Gerenciamento de Despesas
 
-API REST desenvolvida em **Spring Boot** para controle de despesas pessoais, com autenticação JWT, categorização de despesas e persistência em banco de dados MySQL.
+API REST desenvolvida em **Spring Boot** para controle de despesas pessoais, com autenticação JWT, categorização de despesas, paginação e persistência em banco de dados MySQL.
 
 ---
 
 ## ✅ Funcionalidades
 
-* Cadastro de usuários
+* Cadastro de usuários com validação de email único
 * Autenticação com JWT (JSON Web Token)
 * Senhas criptografadas com BCrypt
 * Cadastro de categorias de despesas
-* Cadastro de despesas vinculadas a categorias
-* CRUD completo de categorias
-* CRUD completo de despesas
-* Relacionamento entre entidades
-* Tratamento centralizado de exceções
+* CRUD completo de categorias e despesas
+* Despesas vinculadas ao usuário autenticado (isolamento de dados)
+* Paginação na listagem de despesas
+* Relatório de despesas por período
+* Tratamento centralizado de exceções com status HTTP semânticos
+* Validação de entrada com Bean Validation
 * Proteção de rotas com Spring Security
-* Persistência em banco de dados MySQL
+* Migrations de banco de dados com Flyway
+* Documentação interativa com Swagger UI
 
 ---
 
@@ -28,67 +30,110 @@ API REST desenvolvida em **Spring Boot** para controle de despesas pessoais, com
 | Spring Boot             | 3.5.3  |
 | Spring Web              | -      |
 | Spring Security         | -      |
-| JWT (JJWT)              | -      |
+| JWT (JJWT)              | 0.12.3 |
 | Spring Data JPA         | -      |
 | Hibernate ORM           | -      |
 | MySQL                   | 8      |
+| Flyway                  | -      |
+| Lombok                  | -      |
+| Bean Validation         | -      |
+| Springdoc OpenAPI       | 2.8.5  |
+| Docker                  | -      |
 | BCrypt Password Encoder | -      |
-| Postman                 | Testes |
 
 ---
 
-## 🚀 Como Usar
+## 🚀 Como Rodar Localmente
 
-**URL Base**
+### Pré-requisitos
 
-```text
-https://dispesas-manager-production.up.railway.app
+* Java 21
+* MySQL 8 rodando localmente
+* Maven (ou use o `./mvnw` incluído)
+
+### Passos
+
+```bash
+git clone https://github.com/FelipeAmais/despesas-manager
+cd despesas-manager
 ```
+
+Crie o banco de dados:
+
+```sql
+CREATE DATABASE mydb;
+```
+
+Configure as variáveis de ambiente (ou edite `application.properties`):
+
+```bash
+DATABASE_URL=jdbc:mysql://localhost:3306/mydb
+
+DATABASE_USERNAME=root
+
+DATABASE_PASSWORD=
+
+JWT_SECRET=sua-chave-secreta-com-mais-de-32-caracteres
+
+```
+Execute:
+
+```bash
+./mvnw spring-boot:run
+```
+
+O Flyway criará as tabelas automaticamente ao subir.
+
+---
+
+## 🐳 Rodando com Docker
+
+```bash
+docker build -t despesas-manager .
+
+docker run -p 8080:8080 \
+  -e DATABASE_URL=jdbc:mysql://host.docker.internal:3306/mydb \
+  -e DATABASE_USERNAME=root \
+  -e DATABASE_PASSWORD= \
+  -e JWT_SECRET=sua-chave-secreta-com-mais-de-32-caracteres \
+  despesas-manager
+```
+
+---
+
+## 📄 Documentação
+
+Com a aplicação rodando, acesse o Swagger UI:
+
+http://localhost:8080/swagger-ui/index.html
 
 ---
 
 ## 🔐 Autenticação
 
-A API utiliza autenticação baseada em JWT (JSON Web Token).
-
 ### Registrar Usuário
 
 **POST** `/auth/register`
 
-#### Request
-
 ```json
 {
   "email": "usuario@email.com",
-  "senha": "123456"
+  "senha": "12345678"
 }
 ```
-
-#### Response
-
-```json
-{
-  "id": 1,
-  "email": "usuario@email.com"
-}
-```
-
----
 
 ### Login
 
 **POST** `/auth/login`
 
-#### Request
-
 ```json
 {
   "email": "usuario@email.com",
-  "senha": "123456"
+  "senha": "12345678"
 }
 ```
 
-#### Response
+**Response:**
 
 ```json
 {
@@ -96,26 +141,11 @@ A API utiliza autenticação baseada em JWT (JSON Web Token).
 }
 ```
 
----
-
-## 🔒 Endpoints Protegidos
-
-Após realizar login, envie o token JWT no cabeçalho das requisições:
+Envie o token em todas as requisições protegidas:
 
 ```http
 Authorization: Bearer SEU_TOKEN
 ```
-
-### Endpoints Públicos
-
-| Método | Endpoint       |
-| ------ | -------------- |
-| POST   | /auth/register |
-| POST   | /auth/login    |
-
-### Endpoints Protegidos
-
-Todos os endpoints abaixo exigem autenticação.
 
 ---
 
@@ -125,52 +155,39 @@ Todos os endpoints abaixo exigem autenticação.
 
 **POST** `/despesas`
 
-#### Request
-
 ```json
 {
   "descricao": "Mercado",
   "valor": 150.00,
   "data": "2026-05-01",
-  "categoria": {
-    "id": 1
-  }
+  "categoriaId": 1
 }
 ```
 
----
+### Listar Despesas (paginado)
 
-### Listar Despesas
+**GET** `/despesas?page=0&size=10`
 
-**GET** `/despesas`
-
----
-
-### Buscar Despesa por ID
+### Buscar por ID
 
 **GET** `/despesas/{id}`
 
----
+### Relatório por Período
+
+**GET** `/despesas/relatorio?inicio=2026-01-01&fim=2026-12-31`
 
 ### Atualizar Despesa
 
-**PUT** `/despesas`
-
-#### Request
+**PUT** `/despesas/{id}`
 
 ```json
 {
-  "id": 1,
   "descricao": "Mercado atualizado",
   "valor": 200.00,
   "data": "2026-05-01",
-  "categoria": {
-    "id": 1
-  }
+  "categoriaId": 1
 }
 ```
-
----
 
 ### Deletar Despesa
 
@@ -184,33 +201,23 @@ Todos os endpoints abaixo exigem autenticação.
 
 **POST** `/categorias`
 
-#### Request
-
 ```json
 {
   "nome": "Alimentação"
 }
 ```
 
----
-
 ### Listar Categorias
 
 **GET** `/categorias`
 
----
-
-### Buscar Categoria por ID
+### Buscar por ID
 
 **GET** `/categorias/{id}`
-
----
 
 ### Atualizar Categoria
 
 **PUT** `/categorias`
-
-#### Request
 
 ```json
 {
@@ -219,11 +226,19 @@ Todos os endpoints abaixo exigem autenticação.
 }
 ```
 
----
-
 ### Deletar Categoria
 
 **DELETE** `/categorias/{id}`
+
+---
+
+## 🧪 Testes
+
+```bash
+./mvnw test
+```
+
+Os testes usam H2 em memória — não é necessário MySQL rodando. O Flyway é desabilitado automaticamente no perfil de teste.
 
 ---
 
@@ -240,10 +255,14 @@ src/main/java/com/felipe/despesas
 │   ├── CategoriaController
 │   └── DespesaController
 ├── dto
+│   ├── DespesaRequest
+│   ├── DespesaResponse
 │   ├── LoginRequest
 │   └── LoginResponse
 ├── exception
-│   └── GlobalExceptionHandler
+│   ├── GlobalExceptionHandler
+│   ├── InvalidCredentialsException
+│   └── NotFoundException
 ├── model
 │   ├── Categoria
 │   ├── Despesa
@@ -258,6 +277,11 @@ src/main/java/com/felipe/despesas
 │   ├── JwtService
 │   └── UsuarioService
 └── DespesasApplication
+
+src/main/resources
+├── application.properties
+└── db/migration
+    └── V1__criar_tabelas.sql
 ```
 
 ---
@@ -273,14 +297,8 @@ GitHub: https://github.com/FelipeAmais
 
 ## 🔮 Futuras Melhorias
 
-* [ ] Validação de usuários
-* [ ] Swagger/OpenAPI
-* [ ] Testes unitários
-* [ ] Docker
+* [ ] Rate limiting nos endpoints de autenticação
 * [ ] Refresh Token
-* [ ] Filtros por período
-* [ ] Filtros por categoria
 * [ ] Recuperação de senha
-
-```
-```
+* [ ] Autorização por papel (ROLE_ADMIN para categorias)
+* [ ] Filtros por categoria nas despesas
