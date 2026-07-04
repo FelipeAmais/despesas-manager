@@ -14,6 +14,7 @@ public class Categoria {
     @Column(name = "id")
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String nome;
 
 }
