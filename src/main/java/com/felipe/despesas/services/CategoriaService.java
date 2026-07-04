@@ -2,7 +2,6 @@ package com.felipe.despesas.services;
 
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 import com.felipe.despesas.repository.CategoriaRepository;
 import com.felipe.despesas.model.Categoria;
 
@@ -21,20 +20,12 @@ public class CategoriaService {
     }
 
     public Categoria criarCategoria(Categoria categoria) {
-        Optional<Categoria> existente = categoriaRepository.findByNome(categoria.getNome());
-        if (existente.isPresent()) {
-            throw new IllegalArgumentException("Já existe uma categoria com esse nome");
-        }
         return categoriaRepository.save(categoria);
     }
 
     public Categoria atualizarCategoria(Categoria categoria) {
         if (categoria.getId() == null || !categoriaRepository.existsById(categoria.getId())) {
             throw new IllegalArgumentException("Categoria não encontrada");
-        }
-        Optional<Categoria> existente = categoriaRepository.findByNome(categoria.getNome());
-        if (existente.isPresent() && !existente.get().getId().equals(categoria.getId())) {
-            throw new IllegalArgumentException("Já existe uma categoria com esse nome");
         }
         return categoriaRepository.save(categoria);
     }
