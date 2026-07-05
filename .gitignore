@@ -33,4 +33,5 @@ build/
 .vscode/
 
 
-.README.md 
+.README.md
+.env
