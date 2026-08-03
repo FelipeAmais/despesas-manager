@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UsuarioService implements UserDetailsService {
@@ -29,6 +30,7 @@ public class UsuarioService implements UserDetailsService {
         return new UsuarioResponse(usuario.getId(), usuario.getEmail());
     }
 
+    @Transactional
     public UsuarioResponse criarUsuario(LoginRequest loginRequest) {
         Usuario usuario = new Usuario();
         usuario.setEmail(loginRequest.getEmail());
@@ -37,6 +39,7 @@ public class UsuarioService implements UserDetailsService {
         return toResponse(salva);
     }
 
+    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
         Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Email ou senha Inválidos"));
@@ -50,6 +53,7 @@ public class UsuarioService implements UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));

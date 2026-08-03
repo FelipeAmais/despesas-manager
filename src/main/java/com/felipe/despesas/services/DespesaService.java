@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.felipe.despesas.model.Despesa;
 import com.felipe.despesas.repository.DespesaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DespesaService {
@@ -45,11 +46,13 @@ public class DespesaService {
                 .orElseThrow(() -> new NotFoundException("Despesa inexistente"));
     }
 
+    @Transactional(readOnly = true)
     public Page<DespesaResponse> listarDespesas(Pageable pageable) {
         Page<Despesa> despesas = despesaRepository.findByUsuario(getUsuarioAutenticado(), pageable);
         return despesas.map(this::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public List<DespesaResponse> listaPorPeriodo(LocalDate inicio, LocalDate fim) {
         List<Despesa> despesas = despesaRepository.findByUsuarioAndDataBetween(getUsuarioAutenticado(), inicio, fim);
         return despesas.stream()
@@ -57,10 +60,12 @@ public class DespesaService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public DespesaResponse buscarPorId(Long id) {
         return toResponse(buscarDespesaValidada(id));
     }
 
+    @Transactional
     public DespesaResponse criarDespesa(DespesaRequest despesaRequest) {
         Despesa despesa = toDespesa(null, despesaRequest);
         despesa.setUsuario(getUsuarioAutenticado());
@@ -68,6 +73,7 @@ public class DespesaService {
         return toResponse(salva);
     }
 
+    @Transactional
     public DespesaResponse atualizarDespesa(Long id, DespesaRequest despesaRequest) {
         Despesa despesa = buscarDespesaValidada(id);
         despesa.setDescricao(despesaRequest.getDescricao());
@@ -81,6 +87,7 @@ public class DespesaService {
         return toResponse(despesaAtualizada);
     }
 
+    @Transactional
     public void excluirDespesa(Long id) {
         Despesa despesa = buscarDespesaValidada(id);
         despesaRepository.deleteById(despesa.getId());
