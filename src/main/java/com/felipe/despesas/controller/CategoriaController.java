@@ -27,9 +27,9 @@ public class CategoriaController {
         return categoriaService.criarCategoria(categoria);
     }
 
-    @PutMapping
-    public Categoria atualizarCategoria(@RequestBody Categoria categoria) {
-        return categoriaService.atualizarCategoria(categoria);
+    @PutMapping("/{id}")
+    public Categoria atualizarCategoria(@PathVariable Long id, @RequestBody Categoria categoria) {
+        return categoriaService.atualizarCategoria(id, categoria);
     }
 
     @DeleteMapping("/{id}")
