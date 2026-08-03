@@ -1,5 +1,6 @@
 package com.felipe.despesas.services;
 
+import com.felipe.despesas.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.felipe.despesas.repository.CategoriaRepository;
@@ -25,7 +26,7 @@ public class CategoriaService {
 
     public Categoria atualizarCategoria(Long id, Categoria categoria) {
         if (!categoriaRepository.existsById(id)) {
-            throw new IllegalArgumentException("Categoria não encontrada");
+            throw new NotFoundException("Categoria não encontrada");
         }
         categoria.setId(id);
         return categoriaRepository.save(categoria);
@@ -33,7 +34,7 @@ public class CategoriaService {
 
     public void excluirCategoria(Long id) {
         if (!categoriaRepository.existsById(id)) {
-            throw new IllegalArgumentException("Categoria não encontrada");
+            throw new NotFoundException("Categoria não encontrada");
         }
         categoriaRepository.deleteById(id);
     }
