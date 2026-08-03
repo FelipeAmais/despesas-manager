@@ -2,6 +2,7 @@ package com.felipe.despesas.services;
 
 import com.felipe.despesas.dto.LoginRequest;
 import com.felipe.despesas.dto.LoginResponse;
+import com.felipe.despesas.dto.UsuarioResponse;
 import com.felipe.despesas.exception.InvalidCredentialsException;
 import com.felipe.despesas.model.Usuario;
 import com.felipe.despesas.repository.UsuarioRepository;
@@ -24,11 +25,16 @@ public class UsuarioService implements UserDetailsService {
         this.jwtService = jwtService;
     }
 
-    public Usuario criarUsuario(LoginRequest loginRequest) {
+    public UsuarioResponse toResponse(Usuario usuario) {
+        return new UsuarioResponse(usuario.getId(), usuario.getEmail());
+    }
+
+    public UsuarioResponse criarUsuario(LoginRequest loginRequest) {
         Usuario usuario = new Usuario();
         usuario.setEmail(loginRequest.getEmail());
         usuario.setSenha(passwordEncoder.encode(loginRequest.getSenha()));
-        return usuarioRepository.save(usuario);
+        Usuario salva =  usuarioRepository.save(usuario);
+        return toResponse(salva);
     }
 
     public LoginResponse login(LoginRequest loginRequest) {

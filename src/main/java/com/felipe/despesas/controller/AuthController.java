@@ -3,6 +3,7 @@ package com.felipe.despesas.controller;
 
 import com.felipe.despesas.dto.LoginRequest;
 import com.felipe.despesas.dto.LoginResponse;
+import com.felipe.despesas.dto.UsuarioResponse;
 import com.felipe.despesas.model.Usuario;
 import com.felipe.despesas.services.UsuarioService;
 import jakarta.validation.Valid;
@@ -21,7 +22,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public Usuario register(@Valid @RequestBody LoginRequest usuario) {
+    public UsuarioResponse register(@Valid @RequestBody LoginRequest usuario) {
         return usuarioService.criarUsuario(usuario);
     }
 
