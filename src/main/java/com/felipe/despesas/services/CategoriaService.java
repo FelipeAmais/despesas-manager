@@ -1,5 +1,7 @@
 package com.felipe.despesas.services;
 
+import com.felipe.despesas.dto.CategoriaRequest;
+import com.felipe.despesas.dto.CategoriaResponse;
 import com.felipe.despesas.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -17,23 +19,37 @@ public class CategoriaService {
         this.categoriaRepository = categoriaRepository;
     }
 
+    private CategoriaResponse toResponse(Categoria categoria) {
+        return new CategoriaResponse(categoria.getId(), categoria.getNome());
+    }
+
     @Transactional(readOnly = true)
-    public List<Categoria> listarCategorias() {
-        return categoriaRepository.findAll();
+    public List<CategoriaResponse> listarCategorias() {
+        List<Categoria> categorias = categoriaRepository.findAll();
+        return categorias.stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional
-    public Categoria criarCategoria(Categoria categoria) {
-        return categoriaRepository.save(categoria);
+    public CategoriaResponse criarCategoria(CategoriaRequest categoriaRequest) {
+        Categoria categoria = new Categoria();
+        categoria.setNome(categoriaRequest.getNome());
+        Categoria salva = categoriaRepository.save(categoria);
+        return toResponse(salva);
     }
 
     @Transactional
-    public Categoria atualizarCategoria(Long id, Categoria categoria) {
+    public CategoriaResponse atualizarCategoria(Long id, CategoriaRequest categoriaRequest) {
         if (!categoriaRepository.existsById(id)) {
             throw new NotFoundException("Categoria não encontrada");
         }
+
+        Categoria categoria = new Categoria();
         categoria.setId(id);
-        return categoriaRepository.save(categoria);
+        categoria.setNome(categoriaRequest.getNome());
+        Categoria salva = categoriaRepository.save(categoria);
+        return toResponse(salva);
     }
 
     @Transactional
