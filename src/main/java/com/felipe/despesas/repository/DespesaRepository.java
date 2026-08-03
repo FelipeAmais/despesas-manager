@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface DespesaRepository extends JpaRepository<Despesa, Long> {
 
-    public Page<Despesa> findByUsuario(Usuario usuario, Pageable pageable);
+    Page<Despesa> findByUsuario(Usuario usuario, Pageable pageable);
 
     List<Despesa> findByUsuarioAndDataBetween(Usuario usuario, LocalDate inicio, LocalDate fim);
 }
