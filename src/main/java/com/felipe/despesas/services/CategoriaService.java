@@ -23,10 +23,11 @@ public class CategoriaService {
         return categoriaRepository.save(categoria);
     }
 
-    public Categoria atualizarCategoria(Categoria categoria) {
-        if (categoria.getId() == null || !categoriaRepository.existsById(categoria.getId())) {
+    public Categoria atualizarCategoria(Long id, Categoria categoria) {
+        if (!categoriaRepository.existsById(id)) {
             throw new IllegalArgumentException("Categoria não encontrada");
         }
+        categoria.setId(id);
         return categoriaRepository.save(categoria);
     }
 
