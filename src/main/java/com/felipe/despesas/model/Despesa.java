@@ -27,6 +27,7 @@ public class Despesa {
     private Categoria categoria;
 
     @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     public Despesa(Long id, String descricao, BigDecimal valor, LocalDate data, Categoria categoria) {
