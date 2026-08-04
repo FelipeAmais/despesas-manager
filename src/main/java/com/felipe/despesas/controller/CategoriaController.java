@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.felipe.despesas.dto.CategoriaRequest;
 import com.felipe.despesas.dto.CategoriaResponse;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import com.felipe.despesas.services.CategoriaService;
@@ -25,12 +26,12 @@ public class CategoriaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoriaResponse criarCategoria(@RequestBody CategoriaRequest categoriaRequest) {
+    public CategoriaResponse criarCategoria(@Valid @RequestBody CategoriaRequest categoriaRequest) {
         return categoriaService.criarCategoria(categoriaRequest);
     }
 
     @PutMapping("/{id}")
-    public CategoriaResponse atualizarCategoria(@PathVariable Long id, @RequestBody CategoriaRequest categoriaRequest) {
+    public CategoriaResponse atualizarCategoria(@PathVariable Long id, @Valid @RequestBody CategoriaRequest categoriaRequest) {
         return categoriaService.atualizarCategoria(id, categoriaRequest);
     }
 
