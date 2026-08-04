@@ -1,0 +1,1 @@
+ALTER TABLE despesas MODIFY COLUMN usuario_id BIGINT NOT NULL;
