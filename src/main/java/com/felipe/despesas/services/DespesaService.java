@@ -37,7 +37,7 @@ public class DespesaService {
 
     private Despesa toDespesa(Long id,DespesaRequest despesaRequest) {
         Categoria categoria = categoriaRepository.findById(despesaRequest.getCategoriaId())
-                .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
+                .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
         return new Despesa(id, despesaRequest.getDescricao(), despesaRequest.getValor(), despesaRequest.getData(), categoria);
     }
 
@@ -80,7 +80,7 @@ public class DespesaService {
         despesa.setValor(despesaRequest.getValor());
         despesa.setData(despesaRequest.getData());
         Categoria categoria = categoriaRepository.findById(despesaRequest.getCategoriaId())
-                .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
+                .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
         despesa.setCategoria(categoria);
 
         Despesa despesaAtualizada = despesaRepository.save(despesa);
