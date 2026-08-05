@@ -5,6 +5,7 @@ import java.util.List;
 import com.felipe.despesas.dto.DespesaRequest;
 import com.felipe.despesas.dto.DespesaResponse;
 import com.felipe.despesas.exception.NotFoundException;
+import com.felipe.despesas.mapper.DespesaMapper;
 import com.felipe.despesas.model.Categoria;
 import com.felipe.despesas.model.Usuario;
 import com.felipe.despesas.repository.CategoriaRepository;
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Service;
 import com.felipe.despesas.model.Despesa;
 import com.felipe.despesas.repository.DespesaRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.felipe.despesas.mapper.DespesaMapper.toDespesa;
+import static com.felipe.despesas.mapper.DespesaMapper.toResponse;
+
 
 @Service
 public class DespesaService {
@@ -31,16 +36,6 @@ public class DespesaService {
         return (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    private DespesaResponse toResponse(Despesa despesa) {
-        return new DespesaResponse(despesa.getId(), despesa.getDescricao(), despesa.getValor(), despesa.getData(), despesa.getCategoria());
-    }
-
-    private Despesa toDespesa(Long id,DespesaRequest despesaRequest) {
-        Categoria categoria = categoriaRepository.findById(despesaRequest.getCategoriaId())
-                .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
-        return new Despesa(id, despesaRequest.getDescricao(), despesaRequest.getValor(), despesaRequest.getData(), categoria);
-    }
-
     private  Despesa buscarDespesaValidada(Long id){
         return despesaRepository.findById(id).filter(despesa -> despesa.getUsuario().getId().equals(getUsuarioAutenticado().getId()))
                 .orElseThrow(() -> new NotFoundException("Despesa inexistente"));
@@ -49,14 +44,14 @@ public class DespesaService {
     @Transactional(readOnly = true)
     public Page<DespesaResponse> listarDespesas(Pageable pageable) {
         Page<Despesa> despesas = despesaRepository.findByUsuario(getUsuarioAutenticado(), pageable);
-        return despesas.map(this::toResponse);
+        return despesas.map(DespesaMapper::toResponse);
     }
 
     @Transactional(readOnly = true)
     public List<DespesaResponse> listaPorPeriodo(LocalDate inicio, LocalDate fim) {
         List<Despesa> despesas = despesaRepository.findByUsuarioAndDataBetween(getUsuarioAutenticado(), inicio, fim);
         return despesas.stream()
-                .map(this::toResponse)
+                .map(DespesaMapper::toResponse)
                 .toList();
     }
 
@@ -67,9 +62,14 @@ public class DespesaService {
 
     @Transactional
     public DespesaResponse criarDespesa(DespesaRequest despesaRequest) {
-        Despesa despesa = toDespesa(null, despesaRequest);
+        Categoria categoria = categoriaRepository.findById(despesaRequest.getCategoriaId())
+                .orElseThrow(() -> new NotFoundException("Categoria inexistente"));
+
+        Despesa despesa = toDespesa(null, despesaRequest, categoria);
         despesa.setUsuario(getUsuarioAutenticado());
+
         Despesa salva = despesaRepository.save(despesa);
+
         return toResponse(salva);
     }
 

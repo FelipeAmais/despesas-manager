@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.felipe.despesas.mapper.UsuarioMapper.toResponse;
+
 @Service
 public class UsuarioService implements UserDetailsService {
 
@@ -24,10 +26,6 @@ public class UsuarioService implements UserDetailsService {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
-    }
-
-    public UsuarioResponse toResponse(Usuario usuario) {
-        return new UsuarioResponse(usuario.getId(), usuario.getEmail());
     }
 
     @Transactional

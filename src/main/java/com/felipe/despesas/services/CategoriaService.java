@@ -9,6 +9,8 @@ import com.felipe.despesas.repository.CategoriaRepository;
 import com.felipe.despesas.model.Categoria;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.felipe.despesas.mapper.CategoriaMapper.toResponse;
+
 
 @Service
 public class CategoriaService {
@@ -19,15 +21,11 @@ public class CategoriaService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    private CategoriaResponse toResponse(Categoria categoria) {
-        return new CategoriaResponse(categoria.getId(), categoria.getNome());
-    }
-
     @Transactional(readOnly = true)
     public List<CategoriaResponse> listarCategorias() {
         List<Categoria> categorias = categoriaRepository.findAll();
         return categorias.stream()
-                .map(this::toResponse)
+                .map(c -> toResponse(c))
                 .toList();
     }
 
