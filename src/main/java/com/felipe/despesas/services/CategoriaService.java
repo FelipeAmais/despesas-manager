@@ -3,7 +3,6 @@ package com.felipe.despesas.services;
 import com.felipe.despesas.dto.CategoriaRequest;
 import com.felipe.despesas.dto.CategoriaResponse;
 import com.felipe.despesas.exception.NotFoundException;
-import com.felipe.despesas.mapper.CategoriaMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.felipe.despesas.repository.CategoriaRepository;
@@ -26,7 +25,7 @@ public class CategoriaService {
     public List<CategoriaResponse> listarCategorias() {
         List<Categoria> categorias = categoriaRepository.findAll();
         return categorias.stream()
-                .map(CategoriaMapper::toResponse)
+                .map(c -> toResponse(c))
                 .toList();
     }
 
