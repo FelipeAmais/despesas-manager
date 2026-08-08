@@ -39,8 +39,6 @@ class UsuarioServiceTest {
 
     private Usuario usuario;
     private LoginRequest loginRequest;
-    private LoginResponse loginResponse;
-    private UsuarioResponse usuarioResponse;
 
     @BeforeEach
     void setUp() {
@@ -53,10 +51,6 @@ class UsuarioServiceTest {
         usuario.setEmail("emaildeteste1@gmail.com");
         usuario.setSenha("$2a$10$hasheado");
 
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test
@@ -96,9 +90,5 @@ class UsuarioServiceTest {
         assertThrows(InvalidCredentialsException.class, () -> {
             usuarioService.login(loginRequest);
         });
-    }
-
-    @Test
-    void loadUserByUsername() {
     }
 }
