@@ -29,6 +29,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,6 +84,18 @@ class DespesaServiceTest {
     }
 
     @Test
+    void listaPorPeriodo() {
+        LocalDate inicio = LocalDate.now();
+        LocalDate fim = LocalDate.now().plusDays(1);
+        List<Despesa> despesas = List.of(despesa);
+
+        when(despesaRepository.findByUsuarioAndDataBetween(usuario, inicio, fim)).thenReturn(despesas);
+
+        List<DespesaResponse> response = despesaService.listaPorPeriodo(inicio, fim);
+        assertEquals(1, response.size());
+    }
+
+    @Test
     void buscarPorId() {
         when(despesaRepository.findById(1L)).thenReturn(Optional.of(despesa));
 
@@ -134,5 +147,70 @@ class DespesaServiceTest {
         DespesaResponse response = despesaService.criarDespesa(request);
         assertEquals("Mercado", response.getDescricao());
 
+    }
+
+    @Test
+    void atualizarDespesa() {
+        when(despesaRepository.findById(1L)).thenReturn(Optional.of(despesa));
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(despesa.getCategoria()));
+        when(despesaRepository.save(any(Despesa.class))).thenReturn(despesa);
+
+        DespesaRequest request = new DespesaRequest();
+        request.setDescricao("Farmácia");
+        request.setValor(new BigDecimal("140.00"));
+        request.setData(LocalDate.now());
+        request.setCategoriaId(1L);
+
+        DespesaResponse despesaResponse = despesaService.atualizarDespesa(1L, request);
+        assertEquals("Farmácia", despesaResponse.getDescricao());
+    }
+
+    @Test
+    void atualizarDespesaIdNaoEncontrado() {
+        DespesaRequest request = new DespesaRequest();
+        request.setDescricao("Farmácia");
+        request.setValor(new BigDecimal("140.00"));
+        request.setData(LocalDate.now());
+        request.setCategoriaId(1L);
+
+        when(despesaRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> {
+            despesaService.atualizarDespesa(1L, request);
+        });
+    }
+
+    @Test
+    void atualizarDespesaIdDeOutroUsuario() {
+        DespesaRequest request = new DespesaRequest();
+        request.setDescricao("Farmácia");
+        request.setValor(new BigDecimal("140.00"));
+        request.setData(LocalDate.now());
+        request.setCategoriaId(1L);
+
+        Usuario outroUsuario = new Usuario();
+        outroUsuario.setId(2L);
+        despesa.setUsuario(outroUsuario);
+
+        when(despesaRepository.findById(1L)).thenReturn(Optional.of(despesa));
+
+        assertThrows(NotFoundException.class, () -> {
+            despesaService.atualizarDespesa(1L, request);
+        });
+    }
+
+    @Test
+    void excluirDespesa() {
+        when(despesaRepository.findById(1L)).thenReturn(Optional.of(despesa));
+        despesaService.excluirDespesa(1L);
+
+        verify(despesaRepository).deleteById(1L);
+    }
+
+    @Test
+    void excluirDespesaIdNaoEncontrado() {
+        when(despesaRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> {
+            despesaService.excluirDespesa(1L);
+        });
     }
 }
