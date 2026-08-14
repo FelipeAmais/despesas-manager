@@ -1,6 +1,5 @@
 package com.felipe.despesas.dto;
 
-import com.felipe.despesas.model.Categoria;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,5 +14,5 @@ public class DespesaResponse {
     private String descricao;
     private BigDecimal valor;
     private LocalDate data;
-    private Categoria categoria;
+    private CategoriaResponse categoria;
 }
